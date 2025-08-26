@@ -53,8 +53,8 @@ const displayTasks = () => {
                 <p>Title: ${title}</p>
                 <p>Date: ${date}</p>
                 <p>Description: ${description || ""}</p>
-                <button onclick="updateTask(this)">Update</button>
-                <button onclick="deleteTask(this)">Delete</button>
+                <button id="updateBtn" onclick="updateTask(this)">Update</button>
+                <button id="deleteBtn" onclick="deleteTask(this)">Delete</button>
             </div>
         `;
     });
