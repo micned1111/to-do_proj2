@@ -2,7 +2,7 @@ const titleInput = document.getElementById("title-input");
 const dateInput = document.getElementById("date-input");
 const descriptionInput = document.getElementById("description-input");
 
-const addTaskBtn = document.getElementById("create-new-task-btn");
+const createNewTaskBtn = document.getElementById("create-new-task-btn");
 const addOrUpdateBtn = document.getElementById("add-or-update-btn");
 const quitFormBtn = document.getElementById("quit-form-btn");
 const cancelModalBtn = document.getElementById("cancel-modal-btn");
@@ -17,16 +17,74 @@ let taskArr = [];
 let currentTask = {};
 
 const addOrUpdateTask = () => {
-    
 
-    //displayTasks();
+    if (Object.keys(currentTask).length === 0 ) {
+        const taskObj = {
+            id: `${titleInput.value.toLowerCase().split(" ").join("-")}-${Date.now()}`,
+            title: `${titleInput.value}`,
+            date: `${dateInput.value}`,
+            description: `${descriptionInput.value}`,
+        }
+    
+        taskArr.unshift(taskObj);
+    } else {
+        currentTask.title = titleInput.value
+        currentTask.date = dateInput.value
+        currentTask.description = descriptionInput.value
+
+        taskArr.forEach(({ id }, index) => {
+            if (id === currentTask.id) {
+                taskArr.splice(index, 1, currentTask);
+            }
+        });
+    }
+    
+    displayTasks();
+    reset();
+    changeDisplay();
 };
 
 const displayTasks = () => {
-    //
+    tasksOutputContainer.innerHTML = "";
+
+    taskArr.forEach(({ id, title, date, description }) => {
+        tasksOutputContainer.innerHTML += `
+            <div class="task-item" id="${id}">
+                <p>Title: ${title}</p>
+                <p>Date: ${date}</p>
+                <p>Description: ${description || ""}</p>
+                <button onclick="updateTask(this)">Update</button>
+                <button onclick="deleteTask(this)">Delete</button>
+            </div>
+        `;
+    });
 }
 
-addTaskBtn.addEventListener("click", () => {
+const updateTask = (updateBtn) => {
+    const idOfTask = updateBtn.parentElement.id;
+    const indexOfTask = getIndex(idOfTask);
+
+    currentTask = taskArr[indexOfTask]
+
+    titleInput.value = taskArr[indexOfTask].title
+    dateInput.value = taskArr[indexOfTask].date
+    descriptionInput.value = taskArr[indexOfTask].description
+
+    addOrUpdateBtn.innerText = "Update task"
+
+    changeDisplay();
+}
+
+const deleteTask = (deleteBtn) => {
+    const idOfTask = deleteBtn.parentElement.id;
+    const indexOfTask = getIndex(idOfTask);
+    taskArr.splice(indexOfTask, 1);
+
+    reset();
+    displayTasks();
+}
+
+createNewTaskBtn.addEventListener("click", () => {
 	changeDisplay();
 });
 
@@ -42,6 +100,11 @@ formContainer.addEventListener("submit", (e) => {
 });
 
 quitFormBtn.addEventListener("click", () => {
+    if (titleInput.value === "" && dateInput.value === "" && descriptionInput.value === "") {
+        reset()
+        changeDisplay()
+        return
+    }
 	quitFormModal.showModal();
 });
 
@@ -61,7 +124,15 @@ const changeDisplay = () => {
 };
 
 const reset = () => {
+    currentTask = {}
 	titleInput.value = "";
 	dateInput.value = "";
 	descriptionInput.value = "";
+    addOrUpdateBtn.innerText = "Add task"
+
 };
+
+const getIndex = (id) => {
+    const task = taskArr.find(task => task.id === id);
+    return taskArr.indexOf(task);
+}
