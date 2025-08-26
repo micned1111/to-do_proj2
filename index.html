@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>To-Do list application</title>
+		<link rel="stylesheet" href="stylesheet.css" />
+	</head>
+	<body>
+		<main>
+			<h1>My To-Do List</h1>
+
+			<div class="main-container" id="main">
+				<button id="create-new-task-btn">
+					<strong>Create New Task</strong>
+				</button>
+				<div class="tasks-container" id="tasks-output-container"></div>
+			</div>
+
+			<form class="form-container hidden" id="form-for-task">
+				<div class="input-field">
+					<label for="title-input">Title:</label>
+					<input type="text" id="title-input" />
+				</div>
+
+				<div class="input-field">
+					<label for="date-input">Date:</label>
+					<input type="date" id="date-input" />
+				</div>
+
+				<div class="input-field">
+					<label for="description-input">Description:</label>
+					<textarea id="description-input"></textarea>
+				</div>
+
+				<div class="form-footer">
+					<button id="add-or-update-btn" type="submit">
+						<strong>Add task</strong>
+					</button>
+					<button id="quit-form-btn" type="button">
+						<strong>X</strong>
+					</button>
+				</div>
+			</form>
+
+			<dialog id="quit-form-modal">
+				<form method="dialog">
+					<p>Are you sure you want to Quit?</p>
+					<div>
+						<button type="button" id="cancel-modal-btn">
+							Cancel
+						</button>
+						<button type="button" id="delete-modal-btn">
+							Delete
+						</button>
+					</div>
+				</form>
+			</dialog>
+		</main>
+		<script src="index.js"></script>
+	</body>
+</html>
