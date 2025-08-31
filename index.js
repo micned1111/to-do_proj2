@@ -17,28 +17,28 @@ let taskArr = JSON.parse(localStorage.getItem("tasks-data")) || [];
 let currentTask = {};
 
 const addOrUpdateTask = () => {
-	if (Object.keys(currentTask).length === 0) {
+	if (addOrUpdateBtn.innerText === "Add Task") {
+        const regex = /[^a-zA-Z0-9 ]/g;
 		const taskObj = {
 			id: `${titleInput.value
+                .replace(regex, "")
 				.toLowerCase()
 				.split(" ")
 				.join("-")}-${Date.now()}`,
 			title: `${titleInput.value}`,
 			date: `${dateInput.value}`,
 			description: `${descriptionInput.value}`,
+            completed: false,
 		};
 
 		taskArr.unshift(taskObj);
 	} else {
-		currentTask.title = titleInput.value;
-		currentTask.date = dateInput.value;
-		currentTask.description = descriptionInput.value;
+        currentTask.title = titleInput.value;
+        currentTask.date = dateInput.value;
+        currentTask.description = descriptionInput.value;
 
-		taskArr.forEach(({ id }, index) => {
-			if (id === currentTask.id) {
-				taskArr.splice(index, 1, currentTask);
-			}
-		});
+        const index = getIndex(currentTask.id);
+		taskArr[index] = currentTask;
 	}
 
 	localStorage.setItem("tasks-data", JSON.stringify(taskArr));
@@ -51,7 +51,11 @@ const addOrUpdateTask = () => {
 const displayTasks = () => {
 	tasksOutputContainer.innerHTML = "";
 
-	taskArr.forEach(({ id, title, date, description }) => {
+	taskArr.forEach(({ id, title, date, description, completed }) => {
+        const checkbox = completed ?  
+            `<span><input id="completedCheckbox" type="checkbox" onclick="changeChecked(this)" checked/></span>` :
+            `<span><input id="completedCheckbox" type="checkbox" onclick="changeChecked(this)" /></span>`;
+
 		tasksOutputContainer.innerHTML += `
             <div class="task-item" id="${id}">
                 <p>Title: ${title}</p>
@@ -60,7 +64,7 @@ const displayTasks = () => {
                 <div class="task-item-footer">
                     <span><button id="updateBtn" onclick="updateTask(this)">Update</button></span>
                     <span><button id="deleteBtn" onclick="deleteTask(this)">Delete</button></span>
-                    <span><input id="completedCheckbox" type="checkbox" /></span>
+                    ${checkbox}
                 </div>
             </div>
         `;
@@ -69,16 +73,13 @@ const displayTasks = () => {
 
 const updateTask = (updateBtn) => {
 	const idOfTask = updateBtn.closest(".task-item").id;
-	const indexOfTask = getIndex(idOfTask);
+	currentTask = taskArr[getIndex(idOfTask)];
 
-	currentTask = taskArr[indexOfTask];
+	titleInput.value = currentTask.title;
+	dateInput.value = currentTask.date;
+	descriptionInput.value = currentTask.description;
 
-	titleInput.value = taskArr[indexOfTask].title;
-	dateInput.value = taskArr[indexOfTask].date;
-	descriptionInput.value = taskArr[indexOfTask].description;
-
-	addOrUpdateBtn.innerText = "Update task";
-
+	addOrUpdateBtn.innerText = "Update Task";
 	changeDisplay();
 };
 
@@ -93,9 +94,16 @@ const deleteTask = (deleteBtn) => {
 	displayTasks();
 };
 
+const changeChecked = (checkbox) => {
+    const idOfTask = checkbox.closest(".task-item").id;
+    const task = taskArr[getIndex(idOfTask)];
+    task.completed = task.completed ? false : true;
+    localStorage.setItem("tasks-data", JSON.stringify(taskArr));
+}
+
 const validateInput = () => {
-	const regex = /^\s*/g;
-	titleInput.value = String(titleInput.value).replace(regex, "");
+    const regex = /\s{2,}/g;
+	titleInput.value = String(titleInput.value).replace(regex, " ").trim();
 
 	if (titleInput.value !== "" && dateInput.value !== "") {
 		addOrUpdateTask();
@@ -147,7 +155,7 @@ const reset = () => {
 	titleInput.value = "";
 	dateInput.value = "";
 	descriptionInput.value = "";
-	addOrUpdateBtn.innerText = "Add task";
+	addOrUpdateBtn.innerText = "Add Task";
 };
 
 const getIndex = (id) => {
