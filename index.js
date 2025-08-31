@@ -60,9 +60,7 @@ const displayTasks = () => {
                 <div class="task-item-footer">
                     <span><button id="updateBtn" onclick="updateTask(this)">Update</button></span>
                     <span><button id="deleteBtn" onclick="deleteTask(this)">Delete</button></span>
-                    <span>
-                        <input id="completedCheckbox" type="checkbox" />
-                    </span>
+                    <span><input id="completedCheckbox" type="checkbox" /></span>
                 </div>
             </div>
         `;
@@ -70,7 +68,7 @@ const displayTasks = () => {
 };
 
 const updateTask = (updateBtn) => {
-	const idOfTask = updateBtn.parentElement.id;
+	const idOfTask = updateBtn.closest(".task-item").id;
 	const indexOfTask = getIndex(idOfTask);
 
 	currentTask = taskArr[indexOfTask];
@@ -85,7 +83,7 @@ const updateTask = (updateBtn) => {
 };
 
 const deleteTask = (deleteBtn) => {
-	const idOfTask = deleteBtn.parentElement.id;
+	const idOfTask = deleteBtn.closest(".task-item").id;
 	const indexOfTask = getIndex(idOfTask);
 	taskArr.splice(indexOfTask, 1);
 
