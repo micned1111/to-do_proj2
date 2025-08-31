@@ -13,7 +13,7 @@ const formContainer = document.getElementById("form-for-task");
 const tasksOutputContainer = document.getElementById("tasks-output-container");
 const quitFormModal = document.getElementById("quit-form-modal");
 
-let taskArr = [];
+let taskArr = JSON.parse(localStorage.getItem("tasks-data")) || [];
 let currentTask = {};
 
 const addOrUpdateTask = () => {
@@ -38,6 +38,8 @@ const addOrUpdateTask = () => {
             }
         });
     }
+
+    localStorage.setItem("tasks-data", JSON.stringify(taskArr));
     
     displayTasks();
     reset();
@@ -80,8 +82,22 @@ const deleteTask = (deleteBtn) => {
     const indexOfTask = getIndex(idOfTask);
     taskArr.splice(indexOfTask, 1);
 
+    localStorage.setItem("tasks-data", JSON.stringify(taskArr));
+
     reset();
     displayTasks();
+}
+
+const validateInput = () => {
+    const regex = /^\s*/g;
+    titleInput.value = String(titleInput.value).replace(regex, "");
+    
+	if (titleInput.value !== "" && dateInput.value !== "") {
+		addOrUpdateTask();
+	} else {
+		alert("Please input a title and date - description is optional");
+		return;
+	}
 }
 
 createNewTaskBtn.addEventListener("click", () => {
@@ -90,13 +106,7 @@ createNewTaskBtn.addEventListener("click", () => {
 
 formContainer.addEventListener("submit", (e) => {
 	e.preventDefault();
-
-	if (titleInput.value !== "" && dateInput.value !== "") {
-		addOrUpdateTask();
-	} else {
-		alert("Please input a title and date - description is optional");
-		return;
-	}
+    validateInput()
 });
 
 quitFormBtn.addEventListener("click", () => {
@@ -135,4 +145,8 @@ const reset = () => {
 const getIndex = (id) => {
     const task = taskArr.find(task => task.id === id);
     return taskArr.indexOf(task);
+}
+
+if (taskArr.length > 0) {
+    displayTasks();
 }
