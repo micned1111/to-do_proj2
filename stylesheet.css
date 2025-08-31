@@ -67,6 +67,13 @@ main,
     height: 150px;
 }
 
+.task-item-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 200px;
+}
+
 .form-footer {
     display: flex;
     flex-direction: row;
@@ -115,6 +122,15 @@ textarea {
     width: 100px;
     height: 30px;
     font-size: 14px;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+input[type="checkbox"]:checked {
+    accent-color: var(--main-color);
 }
 
 #quit-form-btn {

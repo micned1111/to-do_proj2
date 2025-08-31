@@ -57,8 +57,13 @@ const displayTasks = () => {
                 <p>Title: ${title}</p>
                 <p>Date: ${date}</p>
                 <p>Description: ${description || ""}</p>
-                <button id="updateBtn" onclick="updateTask(this)">Update</button>
-                <button id="deleteBtn" onclick="deleteTask(this)">Delete</button>
+                <div class="task-item-footer">
+                    <span><button id="updateBtn" onclick="updateTask(this)">Update</button></span>
+                    <span><button id="deleteBtn" onclick="deleteTask(this)">Delete</button></span>
+                    <span>
+                        <input id="completedCheckbox" type="checkbox" />
+                    </span>
+                </div>
             </div>
         `;
 	});
